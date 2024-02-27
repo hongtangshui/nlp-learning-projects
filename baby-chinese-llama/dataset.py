@@ -1,6 +1,6 @@
 import random
-import pandas as pandas
-import numpy as numpy
+import pandas as pd
+import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import torch
 from sklearn.model_selection import train_test_split
@@ -21,7 +21,7 @@ class PretrainDataset(Dataset):
                     data_lst.append(data)
             data = np.concatenate(data_lst)
             data = data[:max_length*int(len(data)/max_length)]
-            self.data=data.reshape(-1, max_length)
+            self.data=data.reshape(-1, max_length)      # 共x行,每行max_length
         print("memmap: {} train data.shape:{}".format(memmap, self.data.shape))
         print("downloading finished ......")
     
@@ -30,8 +30,8 @@ class PretrainDataset(Dataset):
     
     def __getitem__(self, index:int):
         # 
-        sample = self.data[index]
-        X=np.array(sample[:-1]).astype(np.int64)
+        sample = self.data[index]   # 长度为max_length的行向量
+        X=np.array(sample[:-1]).astype(np.int64)   
         Y=np.array(sample[1:]).astype(np.int64)
 
         return torch.from_numpy(X), torch.from_numpy(Y)
